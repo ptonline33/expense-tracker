@@ -1,0 +1,19 @@
+{
+  "name": "aetheria-expense-tracker",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Aetheria-themed offline-first expense tracker PWA (localStorage now, Supabase-ready)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 5173",
+    "build": "vite build",
+    "preview": "vite preview --host --port 4173"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.3"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "vite-plugin-pwa": "^0.20.0"
+  }
+}

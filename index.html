@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Aetheria Expenses — track spending</title>
+  <meta name="description" content="Offline-first expense tracker with weekly/monthly dashboard. Aetheria themed." />
+  <meta name="theme-color" content="#0e091d" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="logo">◈</div>
+      <div>
+        <h1>Aetheria <span>Expenses</span></h1>
+        <p id="monthLabel">—</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="exportBtn" title="Export CSV">⤓ CSV</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    </header>
+
+    <div class="install-banner" id="installBanner">
+      <span>📲 Install this app for offline use &amp; a home-screen icon.</span>
+      <button id="installBtn">Install</button>
+    </div>
+
+    <nav class="tabs">
+      <button data-view="dashboard" class="active">◈ Dashboard</button>
+      <button data-view="expenses">☰ Expenses</button>
+      <button data-view="settings">⚙ Settings</button>
+    </nav>
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard">
+      <div class="grid stats">
+        <div class="card"><h3>Today</h3><div class="big accent-teal" id="statToday">—</div><div class="sub" id="statTodaySub"></div></div>
+        <div class="card"><h3>This week</h3><div class="big accent-orange" id="statWeek">—</div><div class="sub" id="statWeekSub"></div></div>
+        <div class="card"><h3>This month</h3><div class="big accent-pink" id="statMonth">—</div><div class="sub" id="statMonthSub"></div></div>
+        <div class="card"><h3>Daily avg <span class="pill">30d</span></h3><div class="big accent-lime" id="statAvg">—</div><div class="sub" id="budgetSub"></div></div>
+      </div>
+
+      <div class="card" style="margin-top:12px" id="budgetCard">
+        <h3>Monthly budget</h3>
+        <div class="big" id="budgetBig">No budget set</div>
+        <div class="progress"><div id="budgetBar" style="width:0%"></div></div>
+        <div class="sub" id="budgetText" style="margin-top:6px"></div>
+      </div>
+
+      <div class="grid two" style="margin-top:12px">
+        <div class="card">
+          <div class="row-head" style="margin:0 0 8px"><h2>Last 7 days</h2></div>
+          <canvas class="chart" id="chartWeek"></canvas>
+        </div>
+        <div class="card">
+          <div class="row-head" style="margin:0 0 8px">
+            <h2>By category</h2><div class="spacer"></div>
+            <div class="seg" id="donutSeg">
+              <button data-range="week" class="active">Week</button>
+              <button data-range="month" class="">Month</button>
+              <button data-range="year">Year</button>
+            </div>
+          </div>
+          <canvas class="chart" id="chartDonut"></canvas>
+        </div>
+      </div>
+
+      <div class="grid two" style="margin-top:12px">
+        <div class="card">
+          <div class="row-head" style="margin:0 0 8px"><h2>Top categories <span class="pill">this month</span></h2></div>
+          <div id="topCats"></div>
+        </div>
+        <div class="card">
+          <div class="row-head" style="margin:0 0 8px"><h2>Last 6 months</h2></div>
+          <canvas class="chart" id="chartMonths"></canvas>
+          <div class="row-head" style="margin:12px 0 4px"><h2>Recent</h2></div>
+          <div id="recentList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPENSES -->
+    <section id="view-expenses" hidden>
+      <div class="card">
+        <div class="toolbar">
+          <input id="searchInput" placeholder="🔍 Search notes…" style="flex:2;min-width:140px" />
+          <select id="filterCat"><option value="">All categories</option></select>
+          <input type="month" id="filterMonth" />
+        </div>
+        <div class="sub" id="expTotal" style="margin-bottom:8px"></div>
+        <div id="expList"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" hidden>
+      <div class="grid two">
+        <div class="card">
+          <h3>Preferences</h3>
+          <div class="field"><label>Currency symbol</label><input id="setCurrency" maxlength="3" /></div>
+          <div class="field"><label>Monthly budget (0 = off)</label><input id="setBudget" type="number" min="0" /></div>
+          <div class="btn-row"><button class="btn primary" id="saveSettings">Save</button></div>
+        </div>
+        <div class="card">
+          <h3>Categories</h3>
+          <div id="catList"></div>
+          <div class="set-row" style="margin-top:10px">
+            <input id="newCatLabel" placeholder="New category name" />
+            <input id="newCatIcon" placeholder="😀" maxlength="4" style="max-width:64px" />
+            <button class="icon-btn" id="addCatBtn">+ Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <h3>Data — local first, exports for later</h3>
+        <p class="sub">Stored in this browser (localStorage). When you move to Supabase, import this JSON there. See SUPABASE.md.</p>
+        <div class="toolbar">
+          <button class="icon-btn" id="exportJsonBtn">⤓ Export JSON</button>
+          <button class="icon-btn" id="exportCsvBtn2">⤓ Export CSV</button>
+          <label class="icon-btn" style="cursor:pointer">⤒ Import JSON<input type="file" id="importFile" accept=".json" hidden /></label>
+          <button class="icon-btn" id="seedBtn">✨ Load demo data</button>
+          <button class="icon-btn" id="clearBtn" style="border-color:var(--danger);color:var(--pink)">🗑 Clear all</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">◈ Aetheria Expenses · offline-first PWA · data stays in <code>localStorage</code> until you wire Supabase</p>
+  </div>
+
+  <button class="fab" id="fabBtn">＋ Add expense</button>
+
+  <div class="modal-back" id="modalBack">
+    <div class="modal">
+      <h2 id="modalTitle">Add expense</h2>
+      <form id="expForm">
+        <input type="hidden" id="fId" />
+        <div class="field"><label>Amount</label><input id="fAmount" type="number" min="0.01" step="0.01" required inputmode="decimal" placeholder="120.00" /></div>
+        <div class="field"><label>Category</label><div class="chips" id="fCatChips"></div></div>
+        <div class="grid two">
+          <div class="field"><label>Date</label><input id="fDate" type="date" required /></div>
+          <div class="field"><label>Paid via</label>
+            <select id="fPay"><option>Cash</option><option>UPI</option><option>Card</option><option>Netbanking</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Note (optional)</label><input id="fNote" maxlength="120" placeholder="e.g. lunch with team" /></div>
+        <div class="field"><label>Receipt (optional photo)</label>
+          <input id="fReceipt" type="file" accept="image/*" />
+          <div id="receiptPreview"></div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn primary" id="saveExpBtn">Save expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-back" id="viewerBack">
+    <div class="modal viewer">
+      <h2>🧾 Receipt</h2>
+      <img id="viewerImg" alt="Receipt photo" />
+      <div class="btn-row"><button class="btn ghost" id="viewerClose" style="flex:1">Close</button></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
