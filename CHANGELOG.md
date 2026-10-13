@@ -1,5 +1,11 @@
 # CHANGELOG — expense-tracker
 
+## 2026-10-13 — GO_LIVE.md runbook stored
+- New `GO_LIVE.md`: live URLs, one-time schema step, env-var table, deploy
+  commands, verification checks, and troubleshooting (Vercel CLI JWT prompt
+  workaround via REST API, preview-env git-branch skip, PGRST205 cause).
+- No keys in the repo — values referenced by source location only.
+
 ## 2026-10-13 — Deployed to Vercel, reusing TRE Supabase project
 - Dropped the new-project plan; reusing TRE project `zwwpxslfpjyykpadxiuc`
   (same anon key as tre-app-cloud) per user request.
