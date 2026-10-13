@@ -1,6 +1,7 @@
 import './style.css'
 import { Chart, registerables } from 'chart.js'
 import { db, todayStr, parseDate, startOfWeek, monthKey, money } from './store.js'
+import { backend } from './supabase.js'
 
 Chart.register(...registerables)
 
@@ -20,14 +21,23 @@ const catById = (id) => state.categories.find((c) => c.id === id) || { label: id
 
 // ---------- init ----------
 async function init() {
-  state.expenses = await db.listExpenses()
-  state.categories = await db.listCategories()
-  state.settings = await db.getSettings()
+  try {
+    state.expenses = await db.listExpenses()
+    state.categories = await db.listCategories()
+    state.settings = await db.getSettings()
+  } catch (err) {
+    console.error(err)
+    state.expenses = []
+    state.categories = []
+    state.settings = { currency: 'CA$', monthlyBudget: 0 }
+    setTimeout(() => alert('Could not reach the Supabase database.\nCheck the URL/key and that supabase-schema.sql was run in the SQL editor.'), 300)
+  }
   state.selectedCat = state.categories[0]?.id || 'other'
 
   $('setCurrency').value = state.settings.currency
   $('setBudget').value = state.settings.monthlyBudget || ''
   $('filterMonth').value = todayStr().slice(0, 7)
+  $('backendLabel').textContent = backend === 'supabase' ? '☁ Supabase' : '💾 this browser (localStorage)'
 
   wireEvents()
   buildCategoryFilter()
@@ -251,9 +261,15 @@ function closeViewer() {
 
 // ---------- refresh + render ----------
 async function refresh() {
-  state.expenses = await db.listExpenses()
-  state.categories = await db.listCategories()
-  state.settings = await db.getSettings()
+  try {
+    state.expenses = await db.listExpenses()
+    state.categories = await db.listCategories()
+    state.settings = await db.getSettings()
+  } catch (err) {
+    console.error(err)
+    alert('Could not reach the Supabase database.\nCheck the URL/key and that supabase-schema.sql was run in the SQL editor.')
+    return
+  }
   buildCategoryFilter()
   renderAll()
 }

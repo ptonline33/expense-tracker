@@ -28,19 +28,26 @@ Installable: open the URL in Chrome/Edge → Install icon in the address bar
 - ⤓ Export CSV / JSON, ⤒ import JSON backup, ✨ demo data, 🗑 clear
 - 📲 PWA: manifest, maskable icons, auto-update service worker
 
-## Data now → later
+## Data: local vs cloud
 
-- **Now (localhost):** everything in `localStorage`
-  (`aetheria-expenses-v1`, `aetheria-categories-v1`, `aetheria-settings-v1`).
-- **Later:** GitHub → Vercel → Supabase. See `SUPABASE.md` for the exact
-  table schema + the 20-line swap in `src/store.js`.
+The footer shows the active backend:
 
-## Deploy (when ready)
+- **Localhost** (no env vars): everything in `localStorage`.
+- **Vercel** (env vars set): Supabase tables + `receipts` bucket.
+
+See `SUPABASE.md` for the one-time project + schema setup.
+
+## Deploy
 
 ```bash
-git init && git add . && git commit -m "expense tracker"
-gh repo create expense-tracker --public --source=. --push
-vercel   # or `vercel --prod`
+git add -A && git commit -m "..." && git push
+vercel --prod
 ```
 
-No env vars needed until Supabase is wired.
+First deploy links the folder to a Vercel project. Then add env vars
+(`Vercel → Project → Settings → Environment Variables`):
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+…\and redeploy. No other config needed (Vite auto-detected, `dist` output).
