@@ -1,5 +1,19 @@
 # CHANGELOG — expense-tracker
 
+## 2026-10-13 — GitHub live + Supabase dual backend (pending keys)
+- Repo created: https://github.com/ptonline33/expense-tracker (public),
+  commits `fd2a900` (initial app) and `9b7d45d` (Supabase wiring) pushed.
+- New: `src/supabase.js` (env-based client), `supabase-schema.sql`
+  (expenses / expense_categories / expense_settings + public receipts
+  bucket + open-access policies), `.env.example`, rewritten `SUPABASE.md`.
+- `src/store.js` now dual-backend: Supabase when env vars exist,
+  localStorage otherwise. Receipts upload to the bucket in cloud mode
+  (viewer uses public URLs — `app.js` unchanged in how it displays them).
+- Footer shows active backend (☁ Supabase / 💾 local); cloud failures
+  surface a clear alert instead of a blank page.
+- Verified: `npm run build` succeeds. Still needed: new Supabase project +
+  SQL run + keys → then Vercel deploy.
+
 ## 2026-10-13 — Receipt photo attachments
 - Add/edit modal has a receipt photo picker (`accept="image/*"`, phone
   camera supported). Photos are downscaled to max 1280px JPEG (~100–300KB)
