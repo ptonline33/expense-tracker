@@ -1,5 +1,20 @@
 # CHANGELOG — expense-tracker
 
+## 2026-10-13 — Deployed to Vercel, reusing TRE Supabase project
+- Dropped the new-project plan; reusing TRE project `zwwpxslfpjyykpadxiuc`
+  (same anon key as tre-app-cloud) per user request.
+- Vercel project `omarchy1/expense-tracker` live at
+  https://expense-tracker-ten-alpha-40.vercel.app (200 OK).
+- Env vars set via CLI+API for Production and Development:
+  `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`. (CLI `env add` blocks
+  JWT values with an interactive credential prompt, so the anon key was
+  added via the Vercel REST API instead.)
+- `.gitignore` now excludes `.env`; docs updated for TRE-project reuse.
+- Verified: live site returns 200; REST check confirms `expenses` table
+  does NOT exist yet (PGRST205) — schema SQL still to run.
+- Remaining: run `supabase-schema.sql` in TRE project SQL editor, then
+  verify cloud read/write end-to-end.
+
 ## 2026-10-13 — GitHub live + Supabase dual backend (pending keys)
 - Repo created: https://github.com/ptonline33/expense-tracker (public),
   commits `fd2a900` (initial app) and `9b7d45d` (Supabase wiring) pushed.

@@ -1,4 +1,4 @@
-# Supabase setup — one-time, ~5 minutes
+# Supabase setup — one-time, ~2 minutes
 
 The app picks its backend automatically:
 
@@ -6,27 +6,25 @@ The app picks its backend automatically:
 - **`VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` set** (Vercel) → Supabase
   tables + Storage bucket. Same UI, same method names.
 
-## 1. Create a new project
+We reuse the existing TRE project (`zwwpxslfpjyykpadxiuc`), separate tables.
 
-Supabase dashboard → New project → name it `expense-tracker` (or anything) →
-note the database password (you won't need it after this) → wait ~2 min.
+## 1. Run the schema
 
-## 2. Run the schema
-
-Project → SQL Editor → New query → paste the entire
-`supabase-schema.sql` from this repo → Run.
+Supabase dashboard → the TRE project → SQL Editor → New query → paste the
+entire `supabase-schema.sql` from this repo → Run.
 
 This creates `expenses`, `expense_categories`, `expense_settings`,
 the public `receipts` bucket, and open-access policies (same no-login
 pattern as tre-app-cloud — anyone with the deployed URL can read/write,
 so keep the URL private).
 
-## 3. Get the keys
+## 2. Keys (already in use)
 
-Project → Settings → API → copy:
+Same project + anon key as tre-app-cloud (`static/config.js` there).
+On Vercel: Project → Settings → Environment Variables:
 
-- Project URL → `VITE_SUPABASE_URL`
-- `anon` / `public` key → `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_URL` = the project URL
+- `VITE_SUPABASE_ANON_KEY` = the `anon` public key
 
 ## 4. Give them to the deploy step
 
